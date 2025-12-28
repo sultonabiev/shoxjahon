@@ -1,46 +1,124 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Shoxjahon AI v8.5 - Deep Sync</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shoxjahon Analytics v13.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #f2f2f7; color: #1c1c1e; }
-        .ios-card { background: white; border-radius: 28px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .btn-primary { background: #007aff; color: white; border-radius: 20px; padding: 18px; font-weight: 700; transition: 0.2s; }
-        .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
-        .log-entry { font-family: monospace; font-size: 11px; border-left: 3px solid #007aff; padding-left: 10px; margin: 4px 0; color: #636e72; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f0f2f5; color: #1c1c1e; }
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.5); }
+        .upload-zone { border: 2px dashed #e2e8f0; border-radius: 16px; padding: 12px; transition: all 0.3s; cursor: pointer; background: #fff; display: flex; align-items: center; gap: 10px; }
+        .upload-zone:hover { border-color: #3b82f6; background: #eff6ff; }
+        .upload-zone.active { border-color: #22c55e; background: #f0fdf4; border-style: solid; }
+        .btn-gradient { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; transition: transform 0.2s, shadow 0.2s; }
+        .btn-gradient:active { transform: scale(0.98); }
+        
+        /* AI Javobi uchun maxsus stil */
+        .ai-card { background: white; padding: 20px; border-radius: 16px; margin-bottom: 12px; border-left: 4px solid #3b82f6; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .source-bar-bg { background: #e5e7eb; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 5px; }
+        .source-bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease-in-out; }
     </style>
 </head>
-<body class="p-4 pb-12">
+<body class="p-4 min-h-screen">
 
-<div class="max-w-md mx-auto">
+<div class="max-w-3xl mx-auto pb-20">
     <div class="flex items-center justify-between mb-8 pt-4">
-        <h1 class="text-3xl font-black italic">Shoxjahon <span class="text-blue-600">AI</span></h1>
-        <div class="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-[10px] font-bold uppercase tracking-widest">v8.5 Final</div>
+        <div>
+            <h1 class="text-3xl font-black tracking-tight text-gray-900">MOLIYAVIY <span class="text-blue-600">AUDIT</span></h1>
+            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                <i class="fa-solid fa-shield-halved mr-1"></i> Tizim himoyalangan v13.5
+            </p>
+        </div>
+        <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg text-blue-600 text-xl">
+            <i class="fa-solid fa-brain"></i>
+        </div>
     </div>
 
-    <div class="ios-card p-6 mb-6">
-        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Дата анализа</label>
-        <input type="date" id="reportDate" class="w-full bg-gray-100 border-none rounded-2xl p-4 text-xl font-bold outline-none mt-1 mb-6 focus:ring-2 ring-blue-500 transition-all">
-        <button id="runAi" class="btn-primary w-full shadow-lg shadow-blue-200 flex items-center justify-center gap-3">
-            <i class="fa-solid fa-bolt-lightning"></i> СИНХРОНИЗИРОВАТЬ
+    <div class="glass-panel p-6 space-y-6">
+        
+        <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-2 block">Hisobot davrini tanlang</label>
+            <input type="month" id="reportMonth" class="w-full bg-white border border-gray-200 rounded-xl p-3 text-lg font-bold outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-3">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-2 h-6 bg-blue-500 rounded-full"></span>
+                    <h3 class="font-bold text-gray-700">Shoxjahon Hotel</h3>
+                </div>
+                
+                <label for="shoxSources" id="lblShoxS" class="upload-zone group">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-gray-700">Manbalar Hisoboti</div>
+                        <div class="text-[10px] text-gray-400">Excel faylni yuklang</div>
+                    </div>
+                    <input type="file" id="shoxSources" class="file-input" accept=".xls,.xlsx">
+                </label>
+
+                <label for="shoxOTA" id="lblShoxO" class="upload-zone group">
+                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-gray-700">OTA Kanallar</div>
+                        <div class="text-[10px] text-gray-400">Excel faylni yuklang</div>
+                    </div>
+                    <input type="file" id="shoxOTA" class="file-input" accept=".xls,.xlsx">
+                </label>
+            </div>
+
+            <div class="space-y-3">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="w-2 h-6 bg-purple-500 rounded-full"></span>
+                    <h3 class="font-bold text-gray-700">Centrum Hotel</h3>
+                </div>
+
+                <label for="centSources" id="lblCentS" class="upload-zone group">
+                    <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-gray-700">Manbalar Hisoboti</div>
+                        <div class="text-[10px] text-gray-400">Excel faylni yuklang</div>
+                    </div>
+                    <input type="file" id="centSources" class="file-input" accept=".xls,.xlsx">
+                </label>
+
+                <label for="centOTA" id="lblCentO" class="upload-zone group">
+                    <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-globe"></i>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-gray-700">OTA Kanallar</div>
+                        <div class="text-[10px] text-gray-400">Excel faylni yuklang</div>
+                    </div>
+                    <input type="file" id="centOTA" class="file-input" accept=".xls,.xlsx">
+                </label>
+            </div>
+        </div>
+
+        <button id="runAnalysis" class="btn-gradient w-full py-5 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-blue-200 mt-4 flex items-center justify-center gap-3">
+            <i class="fa-solid fa-bolt"></i> Tahlilni Boshlash
         </button>
     </div>
 
-    <div id="statusLog" class="hidden mb-6 p-5 bg-white/60 rounded-[2rem] border border-white shadow-inner backdrop-blur-md">
-        <div id="logContent" class="space-y-1 max-h-40 overflow-y-auto pr-2"></div>
-    </div>
-
     <div id="loader" class="hidden py-12 text-center">
-        <div class="inline-block animate-spin text-4xl text-blue-600 mb-4"><i class="fa-solid fa-circle-notch"></i></div>
-        <p class="font-bold text-gray-400 text-xs tracking-widest uppercase">Сбор данных из PMS и Кассы...</p>
+        <div class="inline-block relative">
+            <div class="animate-spin text-5xl text-blue-600 mb-4"><i class="fa-solid fa-circle-notch"></i></div>
+            <div class="absolute inset-0 flex items-center justify-center text-xs font-bold text-blue-600">AI</div>
+        </div>
+        <p class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] animate-pulse">Moliyaviy ma'lumotlar qayta ishlanmoqda...</p>
     </div>
 
-    <div id="resultBox" class="hidden space-y-4">
-        <div id="aiResponse"></div>
+    <div id="resultBox" class="hidden mt-8 space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+        <div id="aiContent"></div>
     </div>
 </div>
 
@@ -48,118 +126,110 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // Инициализация базы данных
-    const fbApp = initializeApp({ databaseURL: "https://shoxjahon-kassa-default-rtdb.asia-southeast1.firebasedatabase.app" });
-    const db = getDatabase(fbApp);
-
+    const fb = initializeApp({ databaseURL: "https://shoxjahon-kassa-default-rtdb.asia-southeast1.firebasedatabase.app" });
+    const db = getDatabase(fb);
     const DEEPSEEK_KEY = "sk-3b031edec8bf4466887f0eb9cc41b7af";
-    const HOTELS = [
-        { id: "509331", key: "637a565e-7e4b-4692-8041-6b50d2b9a7ac", name: "Centrum" },
-        { id: "500875", key: "31a3f8a2-e540-482b-bb00-9c32ba30985b", name: "Shoxjahon" }
-    ];
 
-    document.getElementById('reportDate').valueAsDate = new Date();
+    let files = { shoxS: null, shoxO: null, centS: null, centO: null };
 
-    function addLog(msg) {
-        const container = document.getElementById('logContent');
-        container.innerHTML += `<div class="log-entry"><span>${new Date().toLocaleTimeString()}</span> ${msg}</div>`;
-        container.scrollTop = container.scrollHeight;
-    }
-
-    // ВЕРСИЯ 8.5: Улучшенный поиск через lastModification
-    async function fetchExelyData(selectedDate) {
-        let stats = { revenue: 0, occupancy: 0, checkins: 0 };
-        const proxy = "https://corsproxy.io/?";
-        
-        // Берем изменения за последние 3 дня, чтобы гарантированно найти активные брони
-        const modDate = new Date();
-        modDate.setDate(modDate.getDate() - 3);
-        const lastMod = modDate.toISOString().split('T')[0] + "T00:00:00Z";
-
-        for (const hotel of HOTELS) {
-            addLog(`Связь с ${hotel.name} (ID: ${hotel.id})...`);
-            try {
-                // Запрос всех изменений по API ключу и ID отеля
-                const targetUrl = `https://connect.hopenapi.com/api/v1/reservations?propertyId=${hotel.id}&lastModification=${lastMod}`;
+    // Excel o'qish funksiyasi
+    function setupFile(inputId, labelId, key) {
+        document.getElementById(inputId).onchange = (e) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const data = new Uint8Array(ev.target.result);
+                const wb = XLSX.read(data, { type: 'array' });
+                // Barcha ma'lumotlarni massivga aylantiramiz
+                files[key] = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
                 
-                const response = await fetch(proxy + encodeURIComponent(targetUrl), {
-                    method: 'GET',
-                    headers: { 
-                        "X-API-KEY": hotel.key, 
-                        "Accept": "application/json" 
-                    }
-                });
-
-                if (!response.ok) throw new Error("API Error");
-
-                const data = await response.json();
-                const reservations = data.reservations || [];
-                addLog(`${hotel.name}: Обработано ${reservations.length} записей.`);
-
-                reservations.forEach(r => {
-                    if (r.status !== 'Cancelled') {
-                        const start = r.stayInterval.start.split('T')[0];
-                        const end = r.stayInterval.end.split('T')[0];
-                        
-                        // Проверяем, проживает ли гость в выбранную дату
-                        if (selectedDate >= start && selectedDate < end) {
-                            stats.occupancy++;
-                            // Расчет выручки за 1 ночь
-                            const nights = Math.max(1, (new Date(end) - new Date(start)) / 86400000);
-                            stats.revenue += (r.totalPrice?.amount / nights) || 0;
-                            if (start === selectedDate) stats.checkins++;
-                        }
-                    }
-                });
-            } catch (err) {
-                addLog(`Ошибка ${hotel.name}: Проверьте права доступа в Exely.`, true);
-            }
-        }
-        return stats;
+                const lbl = document.getElementById(labelId);
+                lbl.classList.add('active');
+                lbl.querySelector('.text-gray-700').innerHTML = '<span class="text-green-600">Fayl Yuklandi</span>';
+                lbl.querySelector('i').className = 'fa-solid fa-check text-green-500';
+            };
+            reader.readAsArrayBuffer(e.target.files[0]);
+        };
     }
 
-    document.getElementById('runAi').onclick = async () => {
+    setupFile('shoxSources', 'lblShoxS', 'shoxS');
+    setupFile('shoxOTA', 'lblShoxO', 'shoxO');
+    setupFile('centSources', 'lblCentS', 'centS');
+    setupFile('centOTA', 'lblCentO', 'centO');
+
+    document.getElementById('runAnalysis').onclick = async () => {
+        const month = document.getElementById('reportMonth').value;
+        if (!month) return alert("Iltimos, hisobot oyini tanlang!");
+
         const loader = document.getElementById('loader');
         const resBox = document.getElementById('resultBox');
-        const logBox = document.getElementById('statusLog');
-        const selDate = document.getElementById('reportDate').value;
         
-        document.getElementById('logContent').innerHTML = '';
-        logBox.classList.remove('hidden');
-        loader.classList.remove('hidden'); resBox.classList.add('hidden');
+        loader.classList.remove('hidden');
+        resBox.classList.add('hidden');
 
         try {
-            addLog("Загрузка данных из Firebase...");
-            const [snap, exely] = await Promise.all([ get(ref(db, '/')), fetchExelyData(selDate) ]);
+            // Firebase'dan Kassa ma'lumotlarini olish
+            const snap = await get(ref(db, '/'));
+            const data = snap.val() || {};
             
-            const kData = snap.val() || {};
-            // Объединение транзакций из всех веток
-            let trans = [...Object.values(kData.transactions || {}), ...Object.values(kData.centrum_hotel?.transactions || {})];
-            let filtered = trans.filter(t => new Date(t.timestamp).toLocaleDateString('en-CA') === selDate);
+            // Tranzaksiyalarni birlashtirish
+            const allTrans = [
+                ...Object.values(data.transactions || {}),
+                ...Object.values(data.centrum_hotel?.transactions || {})
+            ];
 
-            const kirim = filtered.filter(t => t.type === 'Kirim').reduce((s,t)=>s+(t.amount||0),0);
-            const inkas = filtered.filter(t => t.comment?.toLowerCase().includes('инкас')).reduce((s,t)=>s+(t.amount||0),0);
-            const chiqim = filtered.filter(t => t.type === 'Chiqim').reduce((s,t)=>s+(t.amount||0),0) - inkas;
+            // Oy bo'yicha filtrlash (Kassa)
+            const monthlyData = allTrans.filter(t => {
+                const d = t.timestamp ? (typeof t.timestamp === 'number' ? new Date(t.timestamp).toISOString() : String(t.timestamp)) : '';
+                return d.startsWith(month);
+            });
 
-            addLog("DeepSeek AI формирует анализ...");
-            const aiRes = await fetch('https://api.deepseek.com/v1/chat/completions', {
+            const kassaKirim = monthlyData.filter(t => t.type === 'Kirim').reduce((s,t) => s + (Number(t.amount)||0), 0);
+            const kassaChiqim = monthlyData.filter(t => t.type === 'Chiqim').reduce((s,t) => s + (Number(t.amount)||0), 0);
+
+            // AI uchun ma'lumotlarni tayyorlash (Excel'dan namuna)
+            const prepare = (arr) => arr ? arr.slice(0, 80).map(r => r.join(' | ')).join('\n') : "Ma'lumot yo'q";
+
+            const prompt = `
+                ROL: Siz professional mehmonxona moliyaviy auditorisiz.
+                TIL: Javob faqat O'ZBEK tilida bo'lsin.
+                
+                MA'LUMOTLAR (${month}):
+                1. REAL KASSA (Naqd/Karta): Kirim=${kassaKirim.toLocaleString()} UZS, Chiqim=${kassaChiqim.toLocaleString()} UZS.
+                
+                2. EXELY PMS HISOBOTLARI (Bronlar va Daromadlar):
+                - Shoxjahon Sources: \n${prepare(files.shoxS)}
+                - Shoxjahon OTA: \n${prepare(files.shoxO)}
+                - Centrum Sources: \n${prepare(files.centS)}
+                - Centrum OTA: \n${prepare(files.centO)}
+
+                VAZIFA:
+                1. Excel fayllarni tahlil qiling. "Total Price" yoki shunga o'xshash ustunlarni topib, jami daromadni hisoblang.
+                2. MANBALAR TAHLILI: Har bir mehmonxona uchun daromadni manbalar bo'yicha bo'lib chiqing (Booking.com, Expedia, Walk-in/Naqd, Tel va h.k.).
+                3. Har bir manba necha foiz daromad olib kelganini hisoblang.
+                4. SOLISHTIRISH: Kassa (haqiqiy pul) va Exely (hisoblangan pul) o'rtasidagi farqni toping va sababini tushuntiring (masalan, to'lanmagan bronlar yoki terminal pullari kassaga kirmagan bo'lishi mumkin).
+                
+                FORMAT (HTML/Tailwind):
+                - Chiroyli kartochkalar ishlating.
+                - Har bir manba uchun rangli "Progress Bar" chizing.
+                - Muhim raqamlarni katta va qalin qilib ko'rsating.
+                - Markdown ishlatmang, faqat toza HTML.
+            `;
+
+            const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${DEEPSEEK_KEY}` },
                 body: JSON.stringify({
                     model: "deepseek-chat",
-                    messages: [
-                        { role: "system", content: "Вы — Shoxjahon AI, эксперт-аналитик. Пишите на русском. Ответ давайте ТОЛЬКО в формате чистого HTML/Tailwind CSS. Используйте карточки, иконки и жирный шрифт. Не используйте Markdown блоки." },
-                        { role: "user", content: `Проанализируй: Дата ${selDate}. Касса Приход: ${kirim}, Расход: ${chiqim}. Exely Доход: ${exely.revenue}, Занято номеров: ${exely.occupancy}, Заездов: ${exely.checkins}. Сравни данные кассы и PMS.` }
-                    ]
+                    messages: [{ role: "user", content: prompt }]
                 })
             });
 
-            const aiData = await aiRes.json();
-            document.getElementById('aiResponse').innerHTML = aiData.choices[0].message.content.replace(/```html|```/g, '');
+            const aiRes = await response.json();
+            document.getElementById('aiContent').innerHTML = aiRes.choices[0].message.content.replace(/```html|```/g, '');
             resBox.classList.remove('hidden');
-            addLog("Отчет готов!");
+
         } catch (e) {
-            addLog("Критическая ошибка синхронизации!");
+            alert("Xatolik yuz berdi: " + e.message);
         } finally {
             loader.classList.add('hidden');
         }
